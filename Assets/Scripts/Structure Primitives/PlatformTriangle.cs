@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlatformTriangle : Structure {
     
-    public override bool CheckSnaps (Structure snapTo) {
+    public override bool CheckSnap (Structure snapTo) {
         return false;
     } 
 
