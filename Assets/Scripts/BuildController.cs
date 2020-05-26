@@ -7,32 +7,78 @@ public class BuildController : MonoBehaviour {
 	//order by distance to cursor using ClosestPoint
 	//test. closest to furthest, if can snap
 	//test in Snap every structure to current building
-
-	private LayerMask structureMask = 1 << LayerMask.NameToLayer("Structure");
+	
+	private string structureLayer = "Structure";
+	private LayerMask structureMask;
 	private LayerMask validityCheckMask;
+	
+	public GameObject paltform;
 
 	Vector3 cursorPos;
+	[SerializeField]
 	float checkRadius = 5.0f;
+	[SerializeField]
+	float checkDist = 5.0f;
 
+	//GameObject highlightPrefab;
+	[SerializeField]
+	GameObject highlight;
 	Structure currentStructure;
 	
-	//Called when a structure is successfully placed
-	void OnInstall () {
-		
+	MeshFilter highlightMesh;
+	Renderer highlightRenderer;
+	
+	[SerializeField]
+	Camera cam;
+	
+	[SerializeField]
+	private Material validMaterial;
+	[SerializeField]
+	private Material invalidMaterial;
+	
+	private bool canPlace = false;
+	
+	void Awake () {
+		structureMask = 1 << LayerMask.NameToLayer(structureLayer);
+		highlightMesh = highlight.GetComponent<MeshFilter>();
+		highlightRenderer = highlight.GetComponent<Renderer>();
+		ChangeStructure(paltform);
+	}
+	
+	void LateUpdate () {
+		cursorPos = GetCursorPos();
+		Snap();
 	}
 
 	//Gets an array of colliders within checkRadius of the 3d cursor position, then sorts it based on distance to the cursor
 	Collider[] GetStructures () {
 		return Physics.OverlapSphere(cursorPos, checkRadius, structureMask).OrderBy(o => o.ClosestPointOnBounds(cursorPos)).ToArray();
 	}
-
-	void SetValidity (bool valid) {
+	
+	public void ChangeStructure (GameObject structure) {
+		if (structure.layer != LayerMask.NameToLayer(structureLayer) || structure.GetComponent<Structure>() == null) {
+			highlightMesh.mesh = null;
+			return;
+		}
+		//highlightPrefab = structure;
+		currentStructure = structure.GetComponent<Structure>();
+		highlightMesh.mesh = structure.GetComponent<MeshFilter>().mesh;
+		Snap();
+	}
+	
+	//Called when a structure is successfully placed
+	void OnInstall () {
+		
+	}
+    
+	//Toggles whether we can place a structure
+    void SetValidity (bool valid) {
 		if (valid) {
-			//change material
-			//change canPlace to tr
+			highlightRenderer.material = validMaterial;
+			canPlace = true;
 		} else {
-			//change material
-			//change canPlace to false
+			highlightRenderer.material = invalidMaterial;
+			canPlace = false;
 		}
 	}
 
@@ -47,10 +93,22 @@ public class BuildController : MonoBehaviour {
 			if (currentStructure.CheckSnap(snapTo)) {
 				if (currentStructure.IsValid(validityCheckMask)) {
 					//TODO: set valid
-					break;
+					SetValidity(true);
+					return;
 				}
 			}
 		}
 		//TODO: no valid snaps; set invalid
+		SetValidity(false);
+	}
+	
+	//gets the 3D point that the cursor is mousing over
+	Vector3 GetCursorPos () {
+		Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
+		if (Physics.Raycast(ray, out hit, checkDist)) {
+			return hit.point;
+		}
+		return ray.GetPoint(checkDist);
 	}
 }

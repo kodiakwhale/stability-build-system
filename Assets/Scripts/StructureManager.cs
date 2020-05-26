@@ -30,6 +30,7 @@ public class StructureManager : MonoBehaviour {
 		
 		snapStorage = transform.Find("Snaps");
 		structures = new List<Structure>();
+		destroyed = new List<Structure>();
 		
 		//store two copies of every snap, in case we need to snap two of the same structure together
 		for	(int i = 0; i < structurePrefabs.Length; i++) {
@@ -81,6 +82,15 @@ public class StructureManager : MonoBehaviour {
 				StoreSubSnaps(child, subSnap);
 			}
 		}
+	}
+	
+	public static Transform GetSnap (Structure structure) {
+		string snapName = structure.GetType().Name;
+		Transform snap = snapStorage.Find(snapName);
+		if (snap == null) {
+			snap = snapStorage.Find(snapName + "B");
+		}
+		return snap;
 	}
 	#endregion
 	
