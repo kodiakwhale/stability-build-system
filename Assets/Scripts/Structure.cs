@@ -24,6 +24,12 @@ public abstract class Structure : MonoBehaviour {
     //snaps could be different for any 2 structures, so they must define their own snapping behavior or inherit functionality from another structure
     public abstract bool CheckSnap (Structure snapTo);
     
+    //Call this instead of Destroy() on every structure
+    public virtual void Remove () {
+        StructureManager.RemoveStructure(this);
+        Destroy(gameObject);
+    }
+    
     protected void SetSnap () {
         snap = StructureManager.GetSnap(this);
         snap.SetParent(transform);

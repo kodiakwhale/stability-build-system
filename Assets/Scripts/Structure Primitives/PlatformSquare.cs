@@ -10,6 +10,10 @@ public class PlatformSquare : Structure {
 		
 		SetSnap();
 		
+		//why snap in Structure?
+		//make another script just for the highlight?
+		//or a bool to tell if this is a highlight?
+		
 		if (snap is PlatformSquare) {
 			//snap PlatformSquare to PlatformSquare
 		} else if (snap is PlatformTriangle) {

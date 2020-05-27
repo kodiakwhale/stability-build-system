@@ -101,8 +101,8 @@ public class StructureManager : MonoBehaviour {
 		}
 	}
 	
+	//when a structure is removed, call this
 	public static void RemoveStructure (Structure structure) {
-		//when a structure is removed, call this
 		if (structures.Contains(structure)) {
 			structures.Remove(structure);
 		}

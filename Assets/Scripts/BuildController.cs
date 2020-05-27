@@ -27,6 +27,7 @@ public class BuildController : MonoBehaviour {
 	
 	MeshFilter highlightMesh;
 	Renderer highlightRenderer;
+	Structure highlightStructure;
 	
 	[SerializeField]
 	Camera cam;
@@ -56,13 +57,16 @@ public class BuildController : MonoBehaviour {
 	}
 	
 	public void ChangeStructure (GameObject structure) {
-		if (structure.layer != LayerMask.NameToLayer(structureLayer) || structure.GetComponent<Structure>() == null) {
+		Structure structureComponent = structure.GetComponent<Structure>();
+		if (structure.layer != LayerMask.NameToLayer(structureLayer) || structureComponent == null) {
 			highlightMesh.mesh = null;
 			return;
 		}
-		//highlightPrefab = structure;
-		currentStructure = structure.GetComponent<Structure>();
-		highlightMesh.mesh = structure.GetComponent<MeshFilter>().mesh;
+		if (highlightStructure != null) {
+			Destroy(highlightStructure);
+		}
+		currentStructure = highlight.AddComponent(structureComponent.GetType()) as Structure;
+		highlightMesh.mesh = structure.GetComponent<MeshFilter>().sharedMesh;
 		Snap();
 	}
 	
@@ -99,6 +103,7 @@ public class BuildController : MonoBehaviour {
 			}
 		}
 		//TODO: no valid snaps; set invalid
+		highlight.transform.position = cursorPos;
 		SetValidity(false);
 	}
 	
