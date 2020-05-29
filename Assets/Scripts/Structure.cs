@@ -1,10 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 //TODO: if we never need to provide base implementations (virtual methods), switch to IStructure interface
 public abstract class Structure : MonoBehaviour {
-
+    
+    [SerializeField]
+	private bool canPlaceOnlyWhenSnapped;
+    
+    //stablity and health should be it's own script
+    //snap to that, not structure?
     [SerializeField]
     protected int maxHealth = 100;
     [SerializeField]
@@ -24,18 +27,26 @@ public abstract class Structure : MonoBehaviour {
     //snaps could be different for any 2 structures, so they must define their own snapping behavior or inherit functionality from another structure
     public abstract bool CheckSnap (Structure snapTo);
     
+    //By default, every structure removes its snaps when placed
+    //Could override if you have a structure with additional children (e.g. a torch with a point light)
+    public virtual void OnInstall () {
+        for (int i = 0; i < transform.childCount; i++) {
+            Destroy(transform.GetChild(i).gameObject);
+        }
+    }
+    
     //Call this instead of Destroy() on every structure
     public virtual void Remove () {
         StructureManager.RemoveStructure(this);
         Destroy(gameObject);
     }
     
-    protected void SetSnap () {
+    public void SetSnap () {
         snap = StructureManager.GetSnap(this);
         snap.SetParent(transform);
     }
     
-    protected void ReturnSnap () {
+    public void ReturnSnap () {
         StructureManager.StoreSnaps(snap);
         Destroy(snap.gameObject);
         snap = null;
@@ -44,11 +55,11 @@ public abstract class Structure : MonoBehaviour {
     //validity checking: base implementation checks to make sure there are no colliders at each point in validityCheckPoints
     //can use OverlapSphere instead of CheckSphere to do additional logic on any found colliders
     public virtual bool IsValid (LayerMask validityCheckMask) {
-        for (int i = 0; i < validityCheckPoints.Length; i++) {
+        /*for (int i = 0; i < validityCheckPoints.Length; i++) {
             if (Physics.CheckSphere(validityCheckPoints[i], validityCheckRadius, validityCheckMask)) {
                 return false;
             }
-        }
+        }*/
         
         return true;
     }

@@ -9,23 +9,26 @@ public class PlatformSquare : Structure {
 		//after snapping, check validity
 		
 		SetSnap();
+		snap.SetSnap();
 		
 		//why snap in Structure?
 		//make another script just for the highlight?
 		//or a bool to tell if this is a highlight?
 		
 		if (snap is PlatformSquare) {
-			//snap PlatformSquare to PlatformSquare
+			
 		} else if (snap is PlatformTriangle) {
 			//snap PlatformSquare to PlatformTriangle
 		} else if (snap is Wall) {
 			//snap PlatformSquare to Wall
 		} else {
 			ReturnSnap();
+			snap.ReturnSnap();
 			return false;
 		}
 		
 		ReturnSnap();
+		snap.ReturnSnap();
 		return true;
 	}
 

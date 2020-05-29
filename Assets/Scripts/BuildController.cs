@@ -13,7 +13,7 @@ public class BuildController : MonoBehaviour {
 	private LayerMask validityCheckMask;
 	
 	public GameObject paltform;
-
+	
 	Vector3 cursorPos;
 	[SerializeField]
 	float checkRadius = 5.0f;
