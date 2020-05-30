@@ -8,15 +8,16 @@ public class StructureManager : MonoBehaviour {
 	It detects groups of collapsed structures and groups them into one rigidbody.
 	*/
 
-	[SerializeField]
-	private Transform[] structurePrefabs;
+	[SerializeField] private Transform[] structurePrefabs;
+	[SerializeField] private KeyCode debugKey = KeyCode.P;
+	private bool showStability = false;
+	Shader debugShader;
 	
 	//singleton pattern
 	private static StructureManager instance;
 	public static StructureManager Instance { get { return instance; } }
 
 	private static Transform snapStorage;
-	
 	private static List<Structure> structures;
 	private static List<Structure> destroyed;
 
@@ -31,6 +32,7 @@ public class StructureManager : MonoBehaviour {
 		snapStorage = transform.Find("Snaps");
 		structures = new List<Structure>();
 		destroyed = new List<Structure>();
+		debugShader = Shader.Find("kodiakwhale/Stability Build Debug");
 		
 		//store two copies of every snap, in case we need to snap two of the same structure together
 		for	(int i = 0; i < structurePrefabs.Length; i++) {
@@ -44,6 +46,11 @@ public class StructureManager : MonoBehaviour {
 			Glue();
 			destroyed = new List<Structure>();
 		}
+		
+		if (Input.GetKeyDown(debugKey)) {
+			//toggle stability on all structure's materials
+			ToggleStability();
+		}
 	}
 	
 	void Glue () {
@@ -52,6 +59,19 @@ public class StructureManager : MonoBehaviour {
 			if (structure != null) {
 				if (!structure.glued) {
 					structure.Glue(structure.transform);
+				}
+			}
+		}
+	}
+	
+	void ToggleStability () {
+		showStability = !showStability;
+		for	(int i = 0; i < structures.Count; i++) {
+			Renderer rend = structures[i].GetComponent<Renderer>();
+			for	(int j = 0; j < rend.materials.Length; j++) {
+				Material mat = rend.materials[j];
+				if (mat.shader = debugShader) {
+					mat.SetFloat("_ShowStability", showStability ? 1 : 0);
 				}
 			}
 		}

@@ -2,17 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pillar : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+public class Pillar : Structure {
+    
+	public override bool CheckSnap (Structure snapTo, Vector3 cursorPos) {
+        return false;
+    } 
+	
 }

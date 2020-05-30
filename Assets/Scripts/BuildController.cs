@@ -41,10 +41,10 @@ public class BuildController : MonoBehaviour {
 	private bool canPlace = false;
 	
 	void Awake () {
+		validityCheckMask = 1 << LayerMask.NameToLayer(structureLayer);
 		structureMask = 1 << LayerMask.NameToLayer(structureLayer);
 		highlightMesh = highlight.GetComponent<MeshFilter>();
 		highlightRenderer = highlight.GetComponent<Renderer>();
-		ChangeStructure(platform);
 	}
 	
 	void Update () {
@@ -56,24 +56,31 @@ public class BuildController : MonoBehaviour {
 		}
 	}
 
-	//Gets an array of colliders within checkRadius of the 3d cursor position, then sorts it based on distance to the cursor
+	//Gets an array of colliders within checkRadius of the 3d cursor position, then sorts it based on distance to the cursor using magic LINQ
 	Collider[] GetStructures () {
 		return Physics.OverlapSphere(cursorPos, checkRadius, structureMask).OrderBy(o => (o.ClosestPointOnBounds(cursorPos) - cursorPos).sqrMagnitude).ToArray();
 	}
 	
+	//Adds a structure component to the highlight (for snapping), and changes the mesh accordingly
+	//Because the highlight is not on the structure layer, it is never accidentally detected as a structure by scripts (via raycasting/overlapsphere)
 	public void ChangeStructure (GameObject structure) {
 		Structure structureComponent = structure.GetComponent<Structure>();
 		structurePrefab = structure;
+		
+		//Make sure a valid structure prefab was passed in
 		if (structure.layer != LayerMask.NameToLayer(structureLayer) || structureComponent == null) {
 			highlightMesh.mesh = null;
 			return;
 		}
+		
+		//Ger rid of the previous structure component, if it exists
 		if (highlightStructure != null) {
 			Destroy(highlightStructure);
 		}
+		
 		currentStructure = highlight.AddComponent(structureComponent.GetType()) as Structure;
 		highlightMesh.mesh = structure.GetComponent<MeshFilter>().sharedMesh;
-		Snap();
+		//Snap();
 	}
 	
 	void Install () {
@@ -112,8 +119,9 @@ public class BuildController : MonoBehaviour {
 				}
 			}
 		}
-		//TODO: no valid snaps; set invalid
+		//TODO: check if doesn't need to be snapped, then test validity against free-place mask
 		highlight.transform.position = cursorPos;
+		highlight.transform.localEulerAngles = Vector3.zero;
 		SetValidity(false);
 	}
 	

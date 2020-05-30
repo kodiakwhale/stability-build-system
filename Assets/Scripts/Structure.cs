@@ -17,7 +17,7 @@ public abstract class Structure : MonoBehaviour {
     protected int stability = 100;
 
     [SerializeField]
-    private Vector3[] validityCheckPoints; //points in local space that must not overlap any colliders, used in validity checking
+    private Vector3[] validityCheckPoints = { Vector3.zero }; //points in local space that must not overlap any colliders, used in validity checking
     private static float validityCheckRadius = 0.01f;
     
     public bool glued { get; private set; } = false;
@@ -33,6 +33,7 @@ public abstract class Structure : MonoBehaviour {
         for (int i = 0; i < transform.childCount; i++) {
             Destroy(transform.GetChild(i).gameObject);
         }
+		StructureManager.AddStructure(this);
     }
     
     //Call this instead of Destroy() on every structure
@@ -64,11 +65,12 @@ public abstract class Structure : MonoBehaviour {
     //validity checking: base implementation checks to make sure there are no colliders at each point in validityCheckPoints
     //can use OverlapSphere instead of CheckSphere to do additional logic on any found colliders
     public virtual bool IsValid (LayerMask validityCheckMask) {
-        /*for (int i = 0; i < validityCheckPoints.Length; i++) {
-            if (Physics.CheckSphere(validityCheckPoints[i], validityCheckRadius, validityCheckMask)) {
+		Vector3 pos = transform.position;
+        for (int i = 0; i < validityCheckPoints.Length; i++) {
+            if (Physics.CheckSphere(pos + validityCheckPoints[i], validityCheckRadius, validityCheckMask)) {
                 return false;
             }
-        }*/
+        }
         
         return true;
     }

@@ -3,12 +3,18 @@ guid: 1d20d9264e4a92748b574123ad57eb06
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
-    100000: Cylinder
-    100002: //RootNode
-    100004: platform_triangle
-    400000: Cylinder
-    400002: //RootNode
-    400004: platform_triangle
+    100000: 0
+    100002: 1
+    100004: 2
+    100006: Cylinder
+    100008: //RootNode
+    100010: platform_triangle
+    400000: 0
+    400002: 1
+    400004: 2
+    400006: Cylinder
+    400008: //RootNode
+    400010: platform_triangle
     2100000: Material
     2300000: Cylinder
     2300002: platform_triangle
