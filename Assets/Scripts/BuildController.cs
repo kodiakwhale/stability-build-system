@@ -12,7 +12,7 @@ public class BuildController : MonoBehaviour {
 	private LayerMask structureMask;
 	private LayerMask validityCheckMask;
 	
-	public GameObject paltform;
+	public GameObject platform;
 	
 	Vector3 cursorPos;
 	[SerializeField]
@@ -24,6 +24,7 @@ public class BuildController : MonoBehaviour {
 	[SerializeField]
 	GameObject highlight;
 	Structure currentStructure;
+	GameObject structurePrefab;
 	
 	MeshFilter highlightMesh;
 	Renderer highlightRenderer;
@@ -43,21 +44,26 @@ public class BuildController : MonoBehaviour {
 		structureMask = 1 << LayerMask.NameToLayer(structureLayer);
 		highlightMesh = highlight.GetComponent<MeshFilter>();
 		highlightRenderer = highlight.GetComponent<Renderer>();
-		ChangeStructure(paltform);
+		ChangeStructure(platform);
 	}
 	
-	void LateUpdate () {
+	void Update () {
 		cursorPos = GetCursorPos();
 		Snap();
+		
+		if (Input.GetButtonDown("Fire1")) {
+			Install();
+		}
 	}
 
 	//Gets an array of colliders within checkRadius of the 3d cursor position, then sorts it based on distance to the cursor
 	Collider[] GetStructures () {
-		return Physics.OverlapSphere(cursorPos, checkRadius, structureMask).OrderBy(o => o.ClosestPointOnBounds(cursorPos)).ToArray();
+		return Physics.OverlapSphere(cursorPos, checkRadius, structureMask).OrderBy(o => (o.ClosestPointOnBounds(cursorPos) - cursorPos).sqrMagnitude).ToArray();
 	}
 	
 	public void ChangeStructure (GameObject structure) {
 		Structure structureComponent = structure.GetComponent<Structure>();
+		structurePrefab = structure;
 		if (structure.layer != LayerMask.NameToLayer(structureLayer) || structureComponent == null) {
 			highlightMesh.mesh = null;
 			return;
@@ -70,9 +76,13 @@ public class BuildController : MonoBehaviour {
 		Snap();
 	}
 	
-	//Called when a structure is successfully placed
-	void OnInstall () {
-		
+	void Install () {
+		if (canPlace && structurePrefab != null) {
+			GameObject newStructure = Instantiate(structurePrefab, highlight.transform.position, highlight.transform.rotation, null);
+			newStructure.layer = LayerMask.NameToLayer("Default");
+			newStructure.GetComponent<Structure>().OnInstall();
+			newStructure.layer = LayerMask.NameToLayer("Structure");
+		}
 	}
     
 	//Toggles whether we can place a structure
@@ -94,7 +104,7 @@ public class BuildController : MonoBehaviour {
 				Debug.LogWarning("GameObject was detected on Structure layer but has no Structure component");
 				continue;
 			}
-			if (currentStructure.CheckSnap(snapTo)) {
+			if (currentStructure.CheckSnap(snapTo, cursorPos)) {
 				if (currentStructure.IsValid(validityCheckMask)) {
 					//TODO: set valid
 					SetValidity(true);

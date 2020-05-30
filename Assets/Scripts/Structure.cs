@@ -25,7 +25,7 @@ public abstract class Structure : MonoBehaviour {
     private Transform snap;
 
     //snaps could be different for any 2 structures, so they must define their own snapping behavior or inherit functionality from another structure
-    public abstract bool CheckSnap (Structure snapTo);
+    public abstract bool CheckSnap (Structure snapTo, Vector3 cursorPos);
     
     //By default, every structure removes its snaps when placed
     //Could override if you have a structure with additional children (e.g. a torch with a point light)
@@ -41,12 +41,21 @@ public abstract class Structure : MonoBehaviour {
         Destroy(gameObject);
     }
     
-    public void SetSnap () {
+    public Transform SetSnap () {
         snap = StructureManager.GetSnap(this);
+		if (snap == null) {
+			return null;
+		}
         snap.SetParent(transform);
+		snap.transform.localPosition = Vector3.zero;
+		snap.transform.localEulerAngles = Vector3.zero;
+        return snap;
     }
     
     public void ReturnSnap () {
+		if (snap == null) {
+			return;
+		}
         StructureManager.StoreSnaps(snap);
         Destroy(snap.gameObject);
         snap = null;
