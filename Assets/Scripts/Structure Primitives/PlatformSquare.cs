@@ -17,26 +17,31 @@ public class PlatformSquare : Structure {
 		if (snap is PlatformSquare) {
 			Transform sidesA = snapA.Find("Sides");
 			Transform sidesB = snapB.Find("Sides");
+			
+			int snapIndex = Building.ClosestChildIndex(sidesB, cursorPos);
 			transform.position = snap.transform.position;
 			transform.rotation = snap.transform.rotation * Quaternion.Euler(0, 180, 0);
 			
-			int snapIndex = Building.ClosestChildIndex(sidesB, cursorPos);
 			Vector3 offset = sidesB.GetChild(snapIndex).position - sidesA.GetChild(snapIndex).position;
 			transform.position += offset;
-			//print(sidesA.GetChild(snapIndex).position + ", " + sidesB.GetChild(snapIndex).position);
 		} else if (snap is PlatformTriangle) {
-			//snap PlatformSquare to PlatformTriangle
+			Transform sidesA = snapA.Find("Sides");
+			Transform sidesB = snapB.Find("Sides");
+			
+			int snapIndex = Building.ClosestChildIndex(sidesB, cursorPos);
+			transform.position = snap.transform.position;
+			transform.rotation = snap.transform.rotation * Quaternion.Euler(0, 120 * snapIndex + 180, 0);
+			
+			Vector3 offset = sidesB.GetChild(snapIndex).position - sidesA.GetChild(0).position;
+			transform.position += offset;
 		} else if (snap is Wall) {
 			//snap PlatformSquare to Wall
+			return ReturnSnap(false, snap);
 		} else {
-			ReturnSnap();
-			snap.ReturnSnap();
-			return false;
+			return ReturnSnap(false, snap);
 		}
 		
-		ReturnSnap();
-		snap.ReturnSnap();
-		return true;
+		return ReturnSnap(true, snap);
 	}
 
 }

@@ -39,9 +39,9 @@ public class SelectStructure : MonoBehaviour {
 	
 	void Update () {
 		if (Input.mouseScrollDelta.y > 0) {
-			Select(selectedStructure + 1);
-		} else if (Input.mouseScrollDelta.y < 0) {
 			Select(selectedStructure - 1);
+		} else if (Input.mouseScrollDelta.y < 0) {
+			Select(selectedStructure + 1);
 		}
 	}
 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2416080548427784976}
   - component: {fileID: 2416080548428882384}
   - component: {fileID: 2361669848852047745}
-  - component: {fileID: 7916645526067605494}
+  - component: {fileID: 1636510884793079743}
   m_Layer: 9
   m_Name: Wall
   m_TagString: Untagged
@@ -27,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2416080548431085328}
-  m_LocalRotation: {x: -0.7071068, y: 1.2790028e-23, z: -1.5700927e-16, w: 0.7071067}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 6.473, y: 2.5, z: -1.7553122}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -97,7 +97,7 @@ MonoBehaviour:
   stability: 100
   validityCheckPoints:
   - {x: 0, y: 0, z: 0}
---- !u!65 &7916645526067605494
+--- !u!65 &1636510884793079743
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -108,5 +108,5 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 4, y: 0.49999994, z: 3.4999995}
-  m_Center: {x: 1.323489e-23, y: 0.000000014901159, z: 0.24999997}
+  m_Size: {x: 3.9999995, y: 3.5, z: 0.5}
+  m_Center: {x: 0, y: 2, z: 0.25}

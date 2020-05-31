@@ -80,6 +80,7 @@ public class BuildController : MonoBehaviour {
 		
 		currentStructure = highlight.AddComponent(structureComponent.GetType()) as Structure;
 		highlightMesh.mesh = structure.GetComponent<MeshFilter>().sharedMesh;
+		highlightRenderer.materials = new Material[structure.GetComponent<Renderer>().sharedMaterials.Length];
 		//Snap();
 	}
 	
@@ -94,13 +95,13 @@ public class BuildController : MonoBehaviour {
     
 	//Toggles whether we can place a structure
     void SetValidity (bool valid) {
-		if (valid) {
-			highlightRenderer.material = validMaterial;
-			canPlace = true;
-		} else {
-			highlightRenderer.material = invalidMaterial;
-			canPlace = false;
+		Material mat = valid ? validMaterial : invalidMaterial;
+		canPlace = valid;
+		Material[] mats = new Material[highlightRenderer.sharedMaterials.Length];
+		for (int i = 0; i < mats.Length; i++) {
+			mats[i] = mat;
 		}
+		highlightRenderer.materials = mats;
 	}
 
 	void Snap () {

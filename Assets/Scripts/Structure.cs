@@ -53,13 +53,19 @@ public abstract class Structure : MonoBehaviour {
         return snap;
     }
     
-    public void ReturnSnap () {
+    public bool ReturnSnap (bool snapped, Structure snapToReturn) {
 		if (snap == null) {
-			return;
+			return snapped;
 		}
         StructureManager.StoreSnaps(snap);
         Destroy(snap.gameObject);
         snap = null;
+		
+		if (snapToReturn != null) {
+			snapToReturn.ReturnSnap(snapped, null);
+		}
+		
+		return snapped;
     }
 
     //validity checking: base implementation checks to make sure there are no colliders at each point in validityCheckPoints
