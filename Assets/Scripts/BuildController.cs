@@ -31,6 +31,10 @@ public class BuildController : MonoBehaviour {
 	Structure highlightStructure;
 	
 	[SerializeField]
+	private KeyCode rotateKey = KeyCode.R;
+	int rotations;
+	
+	[SerializeField]
 	Camera cam;
 	
 	[SerializeField]
@@ -51,6 +55,9 @@ public class BuildController : MonoBehaviour {
 		cursorPos = GetCursorPos();
 		Snap();
 		
+		if (Input.GetKeyDown(rotateKey)) {
+			rotations++;
+		}
 		if (Input.GetButtonDown("Fire1")) {
 			Install();
 		}
@@ -81,7 +88,7 @@ public class BuildController : MonoBehaviour {
 		currentStructure = highlight.AddComponent(structureComponent.GetType()) as Structure;
 		highlightMesh.mesh = structure.GetComponent<MeshFilter>().sharedMesh;
 		highlightRenderer.materials = new Material[structure.GetComponent<Renderer>().sharedMaterials.Length];
-		//Snap();
+		Snap();
 	}
 	
 	void Install () {
@@ -90,6 +97,16 @@ public class BuildController : MonoBehaviour {
 			newStructure.layer = LayerMask.NameToLayer("Default");
 			newStructure.GetComponent<Structure>().OnInstall();
 			newStructure.layer = LayerMask.NameToLayer("Structure");
+			
+			/*Renderer rend = structurePrefab.GetComponent<Renderer>();
+			int matsLength = rend.sharedMaterials.Length;
+			if (matsLength > 0) {
+				Material[] mats = new Material[matsLength];
+				for	(int i = 0; i < matsLength; i++) {
+					mats[i] = rend.sharedMaterials[i];
+				}
+				rend.materials = mats;
+			}*/
 		}
 	}
     
@@ -112,7 +129,7 @@ public class BuildController : MonoBehaviour {
 				Debug.LogWarning("GameObject was detected on Structure layer but has no Structure component");
 				continue;
 			}
-			if (currentStructure.CheckSnap(snapTo, cursorPos)) {
+			if (currentStructure.CheckSnap(snapTo, cursorPos, rotations)) {
 				if (currentStructure.IsValid(validityCheckMask)) {
 					//TODO: set valid
 					SetValidity(true);

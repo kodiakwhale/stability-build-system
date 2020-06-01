@@ -25,7 +25,7 @@ public abstract class Structure : MonoBehaviour {
     private Transform snap;
 
     //snaps could be different for any 2 structures, so they must define their own snapping behavior or inherit functionality from another structure
-    public abstract bool CheckSnap (Structure snapTo, Vector3 cursorPos);
+    public abstract bool CheckSnap (Structure snapTo, Vector3 cursorPos, int rotations);
     
     //By default, every structure removes its snaps when placed
     //Could override if you have a structure with additional children (e.g. a torch with a point light)

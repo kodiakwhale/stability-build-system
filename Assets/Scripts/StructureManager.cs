@@ -72,17 +72,12 @@ public class StructureManager : MonoBehaviour {
 	}
 	
 	static void UpdateStructureDebug (Renderer rend) {
-		Material mat = rend.material;
-		if (mat.shader = debugShader) {
-			mat.SetFloat("_Stability", Random.Range(0, 100.0f)); //TODO: begone with this tomfoolery!
-			mat.SetFloat("_ShowStability", showStability ? 1 : 0);
-			int matsLength = rend.materials.Length;
-			if (matsLength > 0) {
-				Material[] mats = new Material[matsLength];
-				for	(int j = 0; j < matsLength; j++) {
-					mats[j] = mat;
-				}
-				rend.materials = mats;
+		int matsLength = rend.materials.Length;
+		Material[] mats = rend.sharedMaterials;
+		for	(int i = 0; i < matsLength; i++) {
+			if (mats[i].shader = debugShader) {
+				mats[i].SetFloat("_Stability", Random.Range(0, 100.0f)); //TODO: begone with this tomfoolery!
+				mats[i].SetFloat("_ShowStability", showStability ? 1 : 0);
 			}
 		}
 	}

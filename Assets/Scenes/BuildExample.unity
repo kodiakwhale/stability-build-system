@@ -424,7 +424,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.1
   far clip plane: 1000
   field of view: 80
   orthographic: 0
@@ -892,6 +892,7 @@ MonoBehaviour:
   checkRadius: 5
   checkDist: 5
   highlight: {fileID: 992459014}
+  rotateKey: 114
   cam: {fileID: 534669904}
   validMaterial: {fileID: 2100000, guid: 35aa95f2d5e9d7346a5c1c5b72339f73, type: 2}
   invalidMaterial: {fileID: 2100000, guid: abe7e3b95becc9444afae0a8486e1ee0, type: 2}

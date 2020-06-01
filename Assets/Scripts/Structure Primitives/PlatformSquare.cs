@@ -5,7 +5,7 @@ using StabilityBuild;
 public class PlatformSquare : Structure {
 	
 	//returns true if there is a snap available, then snaos
-	public override bool CheckSnap (Structure snap, Vector3 cursorPos) {
+	public override bool CheckSnap (Structure snap, Vector3 cursorPos, int rotations) {
 		
 		Transform snapA = SetSnap(); //snap transform that becomes a child of the highlight structure
 		Transform snapB = snap.SetSnap(); //snap transform that becomes a child of the snap structure
