@@ -17,8 +17,8 @@ public abstract class Structure : MonoBehaviour {
     protected int stability = 100;
 
     [SerializeField]
-    private Vector3[] validityCheckPoints = { Vector3.zero }; //points in local space that must not overlap any colliders, used in validity checking
-    private static float validityCheckRadius = 0.01f;
+    protected Vector3[] validityCheckPoints = { Vector3.zero }; //points in local space that must not overlap any colliders, used in validity checking
+    protected static float validityCheckRadius = 0.01f;
     
     public bool glued { get; private set; } = false;
     

@@ -31,6 +31,8 @@ public class BuildController : MonoBehaviour {
 	Structure highlightStructure;
 	
 	[SerializeField]
+	private KeyCode removeKey = KeyCode.X;
+	[SerializeField]
 	private KeyCode rotateKey = KeyCode.R;
 	int rotations;
 	
@@ -60,6 +62,11 @@ public class BuildController : MonoBehaviour {
 		}
 		if (Input.GetButtonDown("Fire1")) {
 			Install();
+		} else if (Input.GetKeyDown(removeKey)) {
+			Structure structure = GetCursorStructure();
+			if (structure != null) {
+				structure.Remove();
+			}
 		}
 	}
 
@@ -151,5 +158,14 @@ public class BuildController : MonoBehaviour {
 			return hit.point;
 		}
 		return ray.GetPoint(checkDist);
+	}
+	
+	Structure GetCursorStructure () {
+		Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
+		if (Physics.Raycast(ray, out hit, structureMask)) {
+			return hit.collider.GetComponent<Structure>();
+		}
+		return null;
 	}
 }
