@@ -46,6 +46,12 @@ public class BuildController : MonoBehaviour {
 	
 	private bool canPlace = false;
 	
+	//Caches for optimization; Transform.SetParent and GameObject.AddComponent are quite expensive
+	Transform lastSnap;
+	//Don't set and retuirn snap every frame
+	//Beginning of frame: test if transform is the same as last frame, and if it isn't, return the snap and set a new one
+	//End of frame: update last snapped transform
+	
 	void Awake () {
 		validityCheckMask = 1 << LayerMask.NameToLayer(structureLayer);
 		structureMask = 1 << LayerMask.NameToLayer(structureLayer);
@@ -88,22 +94,35 @@ public class BuildController : MonoBehaviour {
 		}
 		
 		//Ger rid of the previous structure component, if it exists
-		if (highlightStructure != null) {
-			Destroy(highlightStructure);
+		if (currentStructure != null) {
+			Destroy(currentStructure);
 		}
 		
 		currentStructure = highlight.AddComponent(structureComponent.GetType()) as Structure;
+		currentStructure.canPlaceOnlyWhenSnapped = structureComponent.canPlaceOnlyWhenSnapped;
 		highlightMesh.mesh = structure.GetComponent<MeshFilter>().sharedMesh;
 		highlightRenderer.materials = new Material[structure.GetComponent<Renderer>().sharedMaterials.Length];
 		Snap();
 	}
 	
+	//Because Physics.CheckSphere doesn't work on concave mesh colliders, duplicate any and make them convex triggers to fix validity checking
 	void Install () {
 		if (canPlace && structurePrefab != null) {
 			GameObject newStructure = Instantiate(structurePrefab, highlight.transform.position, highlight.transform.rotation, null);
 			newStructure.layer = LayerMask.NameToLayer("Default");
 			newStructure.GetComponent<Structure>().OnInstall();
 			newStructure.layer = LayerMask.NameToLayer("Structure");
+			
+			MeshCollider[] cols = newStructure.GetComponents<MeshCollider>();
+			for	(int i = 0; i < cols.Length; i++) {
+				MeshCollider col = cols[i];
+				if (!col.convex && !col.isTrigger) {
+					MeshCollider newCol = newStructure.AddComponent<MeshCollider>();
+					newCol.sharedMesh = col.sharedMesh;
+					newCol.convex = true;
+					newCol.isTrigger = true;
+				}
+			}
 			
 			/*Renderer rend = structurePrefab.GetComponent<Renderer>();
 			int matsLength = rend.sharedMaterials.Length;
@@ -128,25 +147,34 @@ public class BuildController : MonoBehaviour {
 		highlightRenderer.materials = mats;
 	}
 
-	void Snap () {
+	void Snap () {		
 		Collider[] cols = GetStructures();
 		foreach (Collider col in cols) {
 			Structure snapTo = col.GetComponent<Structure>();
-			if (snapTo == null) {
+			if (snapTo == null && currentStructure.canPlaceOnlyWhenSnapped) {
 				Debug.LogWarning("GameObject was detected on Structure layer but has no Structure component");
 				continue;
 			}
+			
 			if (currentStructure.CheckSnap(snapTo, cursorPos, rotations)) {
 				if (currentStructure.IsValid(validityCheckMask)) {
-					//TODO: set valid
 					SetValidity(true);
 					return;
 				}
 			}
+			
 		}
 		//TODO: check if doesn't need to be snapped, then test validity against free-place mask
 		highlight.transform.position = cursorPos;
 		highlight.transform.localEulerAngles = Vector3.zero;
+		
+		if (!currentStructure.canPlaceOnlyWhenSnapped) {
+			if (currentStructure.IsValid(validityCheckMask)) {
+				SetValidity(true);
+				return;
+			}
+		}
+		
 		SetValidity(false);
 	}
 	

@@ -3,8 +3,7 @@
 //TODO: if we never need to provide base implementations (virtual methods), switch to IStructure interface
 public abstract class Structure : MonoBehaviour {
     
-    [SerializeField]
-	private bool canPlaceOnlyWhenSnapped;
+    public bool canPlaceOnlyWhenSnapped = false;
     
     //stablity and health should be it's own script
     //snap to that, not structure?
@@ -53,7 +52,11 @@ public abstract class Structure : MonoBehaviour {
         return snap;
     }
     
-    public bool ReturnSnap (bool snapped, Structure snapToReturn) {
+    public bool ReturnSnap (bool snapped, Structure snapToReturn = null) {
+		if (snapToReturn != null) {
+			snapToReturn.ReturnSnap(snapped);
+		}
+		
 		if (snap == null) {
 			return snapped;
 		}
@@ -61,19 +64,15 @@ public abstract class Structure : MonoBehaviour {
         Destroy(snap.gameObject);
         snap = null;
 		
-		if (snapToReturn != null) {
-			snapToReturn.ReturnSnap(snapped, null);
-		}
-		
 		return snapped;
     }
 
     //validity checking: base implementation checks to make sure there are no colliders at each point in validityCheckPoints
-    //can use OverlapSphere instead of CheckSphere to do additional logic on any found colliders
+    //can use OverlapSphere instead of CheckSphere to do additional logic on any found colliders, or check for mesh colliders
     public virtual bool IsValid (LayerMask validityCheckMask) {
 		Vector3 pos = transform.position;
         for (int i = 0; i < validityCheckPoints.Length; i++) {
-            if (Physics.CheckSphere(pos + validityCheckPoints[i], validityCheckRadius, validityCheckMask)) {
+            if (Physics.CheckSphere(pos + validityCheckPoints[i], validityCheckRadius, validityCheckMask, QueryTriggerInteraction.Collide)) {
                 return false;
             }
         }

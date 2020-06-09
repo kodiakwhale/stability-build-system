@@ -31,6 +31,9 @@ public class Wall : Structure {
     }
 	
 	public override bool IsValid(LayerMask validityCheckMask) {
+		if (Physics.CheckSphere(GetComponent<Renderer>().bounds.center, 0.01f, validityCheckMask, QueryTriggerInteraction.Collide)) {
+			return false;
+		}
 		return true;
 	}
 	

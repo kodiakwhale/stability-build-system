@@ -4,6 +4,9 @@ namespace StabilityBuild {
 	
     public static class Building {
 		
+		public static float BuildScale = 1.75f;
+		public static LayerMask terrainMask = 1 << LayerMask.NameToLayer("Terrain");
+		
 		//TODO: move to generic function in StabilityBuild namespace
 		public static Transform ClosestChild(Transform snap, Vector3 pos) {
 			float closestDist = float.MaxValue;

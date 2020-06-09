@@ -34,7 +34,7 @@ public class Pillar : Structure {
     }
 	
 	public override bool IsValid(LayerMask validityCheckMask) {
-		if (Physics.CheckSphere(GetComponent<Renderer>().bounds.center, 0.01f, validityCheckMask)) {
+		if (Physics.CheckSphere(GetComponent<Renderer>().bounds.center, 0.01f, validityCheckMask, QueryTriggerInteraction.Collide)) {
 			return false;
 		}
 		return true;
