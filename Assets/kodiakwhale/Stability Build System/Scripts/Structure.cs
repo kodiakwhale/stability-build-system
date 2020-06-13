@@ -16,7 +16,7 @@ public abstract class Structure : MonoBehaviour {
     protected int stability = 100;
 
     [SerializeField]
-    protected Vector3[] validityCheckPoints = { Vector3.zero }; //points in local space that must not overlap any colliders, used in validity checking
+    public Vector3[] validityCheckPoints = { Vector3.zero }; //points in local space that must not overlap any colliders, used in validity checking
     protected static float validityCheckRadius = 0.01f;
     
     public bool glued { get; private set; } = false;
@@ -72,7 +72,7 @@ public abstract class Structure : MonoBehaviour {
     public virtual bool IsValid (LayerMask validityCheckMask) {
 		Vector3 pos = transform.position;
         for (int i = 0; i < validityCheckPoints.Length; i++) {
-            if (Physics.CheckSphere(pos + validityCheckPoints[i], validityCheckRadius, validityCheckMask, QueryTriggerInteraction.Collide)) {
+            if (Physics.CheckSphere(transform.TransformPoint(validityCheckPoints[i]), validityCheckRadius, validityCheckMask, QueryTriggerInteraction.Collide)) {
                 return false;
             }
         }

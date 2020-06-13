@@ -31,11 +31,15 @@ public class PlatformSquare : Structure {
 			Vector3 offset = sidesB.GetChild(snapIndex).position - sidesA.GetChild(0).position;
 			transform.position += offset;
 		} else if (snap is Wall) {
-			Transform ceilings = snapB.Find("Ceilings");
+			Transform sidesA = snapA.Find("Sides");
+			Transform ceilingsB = snapB.Find("Ceilings");
 			
-			Transform closestSnap = Building.ClosestChild(ceilings, cursorPos);
+			Transform closestSnap = Building.ClosestChild(ceilingsB, cursorPos);
 			transform.position = closestSnap.position;
 			transform.rotation = closestSnap.rotation;
+			
+			Vector3 offset = sidesA.GetChild(0).position - closestSnap.position;
+			transform.position += offset;
 		} else {
 			return ReturnSnap(false, snap);
 		}

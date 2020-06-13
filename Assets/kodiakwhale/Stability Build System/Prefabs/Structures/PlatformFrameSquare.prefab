@@ -112,10 +112,10 @@ MonoBehaviour:
   health: 100
   stability: 100
   validityCheckPoints:
-  - {x: 1.75, y: 0, z: 0}
-  - {x: 0, y: 0, z: 1.75}
-  - {x: -1.75, y: 0, z: 0}
-  - {x: 0, y: 0, z: -1.75}
+  - {x: 1.4, y: 0, z: 0}
+  - {x: 0, y: 0, z: 1.4}
+  - {x: -1.4, y: 0, z: 0}
+  - {x: 0, y: 0, z: -1.4}
 --- !u!1 &7120973758241017065
 GameObject:
   m_ObjectHideFlags: 0

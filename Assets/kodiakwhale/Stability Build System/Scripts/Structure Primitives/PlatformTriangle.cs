@@ -32,12 +32,17 @@ public class PlatformTriangle : Structure {
 			Vector3 offset = sidesB.GetChild(snapIndex).position - sidesA.GetChild(0).position;
 			transform.position += offset;
 		} else if (snap is Wall) {
-			//snap PlatformSquare to Wall
-			return ReturnSnap(false, snap);
+			Transform sidesA = snapA.Find("Sides");
+			Transform ceilingsB = snapB.Find("Ceilings");
+			
+			Transform closestSnap = Building.ClosestChild(ceilingsB, cursorPos);
+			transform.position = closestSnap.position;
+			transform.rotation = closestSnap.rotation * Quaternion.Euler(0, 180, 0);
+			
+			Vector3 offset = closestSnap.position - sidesA.GetChild(0).position;
+			transform.position += offset;
 		} else {
 			return ReturnSnap(false, snap);
-			//snap.ReturnSnap();
-			//return false;
 		}
 		
 		return ReturnSnap(true, snap);

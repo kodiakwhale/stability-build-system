@@ -110,4 +110,4 @@ MonoBehaviour:
   health: 100
   stability: 100
   validityCheckPoints:
-  - {x: 0, y: 2, z: 0}
+  - {x: 0, y: 2.25, z: 0}

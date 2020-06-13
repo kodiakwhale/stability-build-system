@@ -98,10 +98,10 @@ MonoBehaviour:
   health: 100
   stability: 100
   validityCheckPoints:
-  - {x: 1.75, y: 0, z: 0}
-  - {x: 0, y: 0, z: 1.75}
-  - {x: -1.75, y: 0, z: 0}
-  - {x: 0, y: 0, z: -1.75}
+  - {x: 1.4, y: 0, z: 0}
+  - {x: 0, y: 0, z: 1.4}
+  - {x: -1.4, y: 0, z: 0}
+  - {x: 0, y: 0, z: -1.4}
 --- !u!65 &2718372512609345032
 BoxCollider:
   m_ObjectHideFlags: 0

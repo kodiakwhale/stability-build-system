@@ -16,28 +16,20 @@ public class Pillar : Structure {
 			
 			int snapIndex = Building.ClosestChildIndex(cornersB, cursorPos);
 			transform.position = cornersB.GetChild(snapIndex).position;
-			transform.rotation = Quaternion.Euler(0, rotations * 15, 0);
 		} else if (snap is PlatformTriangle) {
 			Transform cornersB = snapB.Find("Corners");
 			
 			int snapIndex = Building.ClosestChildIndex(cornersB, cursorPos);
 			transform.position = cornersB.GetChild(snapIndex).position;
-			transform.rotation = Quaternion.Euler(0, rotations * 15, 0);
 		} else if (snap is Pillar) {
 			transform.position = snap.transform.position + snap.transform.up * snap.GetComponent<Renderer>().bounds.extents.y * 2;
-			transform.rotation = snap.transform.rotation;
 		} else {
 			return ReturnSnap(false, snap);
 		}
 		
+		transform.rotation = snap.transform.rotation * Quaternion.Euler(0, rotations * 15, 0);
+		
 		return ReturnSnap(true, snap);
     }
-	
-	public override bool IsValid(LayerMask validityCheckMask) {
-		if (Physics.CheckSphere(GetComponent<Renderer>().bounds.center, 0.01f, validityCheckMask, QueryTriggerInteraction.Collide)) {
-			return false;
-		}
-		return true;
-	}
 	
 }

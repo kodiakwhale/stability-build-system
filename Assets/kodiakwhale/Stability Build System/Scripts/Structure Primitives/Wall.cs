@@ -31,10 +31,17 @@ public class Wall : Structure {
     }
 	
 	public override bool IsValid(LayerMask validityCheckMask) {
-		if (Physics.CheckSphere(GetComponent<Renderer>().bounds.center, 0.01f, validityCheckMask, QueryTriggerInteraction.Collide)) {
-			return false;
+		if (base.IsValid(validityCheckMask)) {
+			//create these here instead of assigning in the inspector so we don't have to copy values to the highlight in BuildController
+			Vector3[] supportCheckSpots = { new Vector3(2, 2, 0), new Vector3(-2, 2, 0)};
+			
+			bool hasSupport = true;
+			for (int i = 0; i < supportCheckSpots.Length; i++) {
+				hasSupport = hasSupport && Physics.CheckSphere(transform.TransformPoint(supportCheckSpots[i]), 0.01f, validityCheckMask, QueryTriggerInteraction.Collide);
+			}
+			return hasSupport;
 		}
-		return true;
+		return false;
 	}
 	
 }

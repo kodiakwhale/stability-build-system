@@ -4,17 +4,15 @@ ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
     100000: 0
-    100002: 1
-    100004: platform_square.001
-    100006: //RootNode
+    100002: //RootNode
+    100004: wall
     400000: 0
-    400002: 1
-    400004: platform_square.001
-    400006: //RootNode
+    400002: //RootNode
+    400004: wall
     2100000: Material
-    2300000: platform_square.001
-    3300000: platform_square.001
-    4300000: platform_square.001
+    2300000: wall
+    3300000: wall
+    4300000: wall
   externalObjects: {}
   materials:
     importMaterials: 1

@@ -99,6 +99,8 @@ public class BuildController : MonoBehaviour {
 		}
 		
 		currentStructure = highlight.AddComponent(structureComponent.GetType()) as Structure;
+		currentStructure.validityCheckPoints = structureComponent.validityCheckPoints;
+		//currentStructure.SetValidityCheckPoints(structureComponent);
 		currentStructure.canPlaceOnlyWhenSnapped = structureComponent.canPlaceOnlyWhenSnapped;
 		highlightMesh.mesh = structure.GetComponent<MeshFilter>().sharedMesh;
 		highlightRenderer.materials = new Material[structure.GetComponent<Renderer>().sharedMaterials.Length];
