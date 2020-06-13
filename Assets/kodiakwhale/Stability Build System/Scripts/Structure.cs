@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-//TODO: if we never need to provide base implementations (virtual methods), switch to IStructure interface
 public abstract class Structure : MonoBehaviour {
     
     public bool canPlaceOnlyWhenSnapped = false;
@@ -11,9 +11,6 @@ public abstract class Structure : MonoBehaviour {
     protected int maxHealth = 100;
     [SerializeField]
     protected int health = 100;
-    
-    [SerializeField]
-    protected int stability = 100;
 
     [SerializeField]
     public Vector3[] validityCheckPoints = { Vector3.zero }; //points in local space that must not overlap any colliders, used in validity checking
@@ -22,6 +19,7 @@ public abstract class Structure : MonoBehaviour {
     public bool glued { get; private set; } = false;
     
     private Transform snap;
+	public event Action deathEvent;
 
     //snaps could be different for any 2 structures, so they must define their own snapping behavior or inherit functionality from another structure
     public abstract bool CheckSnap (Structure snapTo, Vector3 cursorPos, int rotations);
@@ -33,10 +31,13 @@ public abstract class Structure : MonoBehaviour {
             Destroy(transform.GetChild(i).gameObject);
         }
 		StructureManager.AddStructure(this);
+		
+		validityCheckPoints = null;
     }
     
     //Call this instead of Destroy() on every structure
     public virtual void Remove () {
+		deathEvent();
         StructureManager.RemoveStructure(this);
         Destroy(gameObject);
     }

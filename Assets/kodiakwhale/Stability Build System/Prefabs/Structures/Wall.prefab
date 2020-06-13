@@ -74,6 +74,7 @@ GameObject:
   - component: {fileID: 2416080548428882384}
   - component: {fileID: 2361669848852047745}
   - component: {fileID: 171872635879929725}
+  - component: {fileID: 114300670655519994}
   m_Layer: 9
   m_Name: Wall
   m_TagString: Untagged
@@ -156,7 +157,6 @@ MonoBehaviour:
   canPlaceOnlyWhenSnapped: 1
   maxHealth: 100
   health: 100
-  stability: 100
   validityCheckPoints:
   - {x: 0, y: 2, z: 0}
 --- !u!65 &171872635879929725
@@ -172,3 +172,17 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 3.9999995, y: 4, z: 0.49944508}
   m_Center: {x: 0, y: 2.24899, z: 0.25}
+--- !u!114 &114300670655519994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2416080548431085328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbc88d5ff0f5ed5449a2158587bb56df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxStability: 100
+  stabilityDegredation: 11

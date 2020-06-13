@@ -7,10 +7,6 @@ public class Wall : Structure {
 		SetSnap();
 		Transform snapB = snap.SetSnap(); //snap transform that becomes a child of the snap structure
 		
-		//why snap in Structure?
-		//make another script just for the highlight?
-		//or a bool to tell if this is a highlight?
-		
 		if (snap is PlatformSquare) {
 			Transform sidesB = snapB.Find("Sides");
 			
@@ -23,6 +19,9 @@ public class Wall : Structure {
 			int snapIndex = Building.ClosestChildIndex(sidesB, cursorPos);
 			transform.position = sidesB.GetChild(snapIndex).position;
 			transform.rotation = snap.transform.rotation * Quaternion.Euler(0, 120 * snapIndex + 180, 0);
+		} else if (snap is Wall) {
+			transform.position = snap.transform.position + Vector3.up * 4 * Building.BuildScale;
+			transform.rotation = snap.transform.rotation;
 		} else {
 			return ReturnSnap(false, snap);
 		}

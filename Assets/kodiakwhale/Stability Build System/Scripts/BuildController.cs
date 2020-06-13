@@ -164,11 +164,10 @@ public class BuildController : MonoBehaviour {
 					return;
 				}
 			}
-			
 		}
-		//TODO: check if doesn't need to be snapped, then test validity against free-place mask
+		
 		highlight.transform.position = cursorPos;
-		highlight.transform.localEulerAngles = Vector3.zero;
+		highlight.transform.localEulerAngles = new Vector3(0, rotations * 90, 0);
 		
 		if (!currentStructure.canPlaceOnlyWhenSnapped) {
 			if (currentStructure.IsValid(validityCheckMask)) {

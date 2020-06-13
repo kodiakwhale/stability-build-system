@@ -78,7 +78,6 @@ public class StructureManager : MonoBehaviour {
 		Material[] mats = rend.sharedMaterials;
 		for	(int i = 0; i < matsLength; i++) {
 			if (mats[i].shader = debugShader) {
-				mats[i].SetFloat("_Stability", Random.Range(0, 100.0f)); //TODO: begone with this tomfoolery!
 				mats[i].SetFloat("_ShowStability", showStability ? 1 : 0);
 			}
 		}
