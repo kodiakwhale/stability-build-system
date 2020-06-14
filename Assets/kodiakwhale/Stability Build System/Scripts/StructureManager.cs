@@ -21,7 +21,7 @@ public class StructureManager : MonoBehaviour {
 
 	private static Transform snapStorage;
 	private static List<Structure> structures;
-	private static List<Structure> destroyed;
+	private static List<Stability> destroyed;
 
 	void Awake () {
 		//only want one instance of this script in the world
@@ -33,7 +33,7 @@ public class StructureManager : MonoBehaviour {
 		
 		snapStorage = transform.Find("Snaps");
 		structures = new List<Structure>();
-		destroyed = new List<Structure>();
+		destroyed = new List<Stability>();
 		debugShader = Shader.Find("kodiakwhale/Stability Build Debug");
 		
 		//store two copies of every snap, in case we need to snap two of the same structure together
@@ -43,10 +43,10 @@ public class StructureManager : MonoBehaviour {
 		}
 	}
 	
-	void Update () {
+	void Update() {
 		if (destroyed.Count > 0) {
 			Glue();
-			destroyed = new List<Structure>();
+			destroyed = new List<Stability>();
 		}
 		
 		if (Input.GetKeyDown(debugKey)) {
@@ -57,7 +57,7 @@ public class StructureManager : MonoBehaviour {
 	
 	void Glue () {
 		for	(int i = 0; i < destroyed.Count; i++) {
-			Structure structure = destroyed[i];
+			Stability structure = destroyed[i];
 			if (structure != null) {
 				if (!structure.glued) {
 					structure.Glue(structure.transform);
@@ -136,12 +136,10 @@ public class StructureManager : MonoBehaviour {
 		
 	}
 	
-	public static void AddDestroyed (Structure structure) {
+	public static void AddDestroyed (Stability structure) {
 		if (!destroyed.Contains(structure)) {
 			destroyed.Add(structure);
 		}
-		RemoveStructure(structure);
-		
 	}
 	#endregion
 	

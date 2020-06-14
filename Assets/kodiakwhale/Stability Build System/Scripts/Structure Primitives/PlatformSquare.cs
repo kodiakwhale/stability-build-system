@@ -40,6 +40,16 @@ public class PlatformSquare : Structure {
 			
 			Vector3 offset = sidesA.GetChild(0).position - closestSnap.position;
 			transform.position += offset;
+		} else if (snap is Ramp) {
+			Transform sidesA = snapA.Find("Sides");
+			Transform sidesB = snapB.Find("Sides");
+			
+			Transform closestSnap = Building.ClosestChild(sidesB, cursorPos);
+			transform.position = closestSnap.position;
+			transform.rotation = closestSnap.rotation;
+			
+			Vector3 offset = closestSnap.position - sidesA.GetChild(0).position;
+			transform.position += offset;
 		} else {
 			return ReturnSnap(false, snap);
 		}

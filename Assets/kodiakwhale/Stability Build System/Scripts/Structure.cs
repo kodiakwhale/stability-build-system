@@ -16,8 +16,6 @@ public abstract class Structure : MonoBehaviour {
     public Vector3[] validityCheckPoints = { Vector3.zero }; //points in local space that must not overlap any colliders, used in validity checking
     protected static float validityCheckRadius = 0.01f;
     
-    public bool glued { get; private set; } = false;
-    
     private Transform snap;
 	public event Action deathEvent;
 
@@ -79,11 +77,6 @@ public abstract class Structure : MonoBehaviour {
         }
         
         return true;
-    }
-    
-    public virtual void Glue (Transform glueTo) {
-        // :)
-        glued = true;
     }
     
 }

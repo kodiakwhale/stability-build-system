@@ -8,6 +8,7 @@ public class Stability : MonoBehaviour {
 	
 	private Renderer rend;
 	private bool fallen = false;
+	public bool glued { get; private set; } = false;
 	
 	private bool anchored;
 	private Stability mostStableNeighbor;
@@ -37,6 +38,10 @@ public class Stability : MonoBehaviour {
 				continue;
 			}
 			neighbor.RemoveNeighbor(this);
+		}
+		MeshCollider col = GetComponent<MeshCollider>();
+		if (col != null && !col.convex) {
+			col.convex = true;
 		}
 		gameObject.AddComponent<Rigidbody>();
 	}
@@ -133,9 +138,47 @@ public class Stability : MonoBehaviour {
 			mat.SetInt("_Stability", stability);
 		}
 		
-		/*if (stability <= 0) {
-			GetComponent<Structure>().Remove();
-		}*/
+		if (stability <= 0) {
+			StructureManager.AddDestroyed(this);
+			fallen = true;
+		}
+	}
+	
+	public void Glue (Transform glueTo) {
+        // :)
+		if (glued || !fallen) {
+			return;
+		}
+        glued = true;
+		MeshCollider col = GetComponent<MeshCollider>();
+		if (col != null && !col.convex) {
+			col.convex = true;
+		}
+		for (int i = 0; i < neighbors.Count; i++) {
+			neighbors[i].Glue(glueTo);
+		}
+		
+		Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+		if (glueTo == transform) {
+			return;
+		}
+		rb.isKinematic = true;
+		
+		transform.SetParent(glueTo);
+		if (rb != null) {
+			Destroy(rb);
+		}
+		//Fall();
+    }
+	
+	void OnCollisionEnter (Collision col) {
+		int layer = col.collider.gameObject.layer;
+		if (!glued || layer == (layer & Building.structureMask)) {
+			return;
+		}
+		
+		GetComponent<Rigidbody>().isKinematic = false;
+		transform.SetParent(null);
 	}
 	
 }

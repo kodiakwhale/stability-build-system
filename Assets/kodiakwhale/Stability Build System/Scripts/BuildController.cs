@@ -125,16 +125,6 @@ public class BuildController : MonoBehaviour {
 					newCol.isTrigger = true;
 				}
 			}
-			
-			/*Renderer rend = structurePrefab.GetComponent<Renderer>();
-			int matsLength = rend.sharedMaterials.Length;
-			if (matsLength > 0) {
-				Material[] mats = new Material[matsLength];
-				for	(int i = 0; i < matsLength; i++) {
-					mats[i] = rend.sharedMaterials[i];
-				}
-				rend.materials = mats;
-			}*/
 		}
 	}
     
