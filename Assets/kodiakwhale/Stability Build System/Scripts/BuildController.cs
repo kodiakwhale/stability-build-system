@@ -19,8 +19,7 @@ public class BuildController : MonoBehaviour {
 	float checkRadius = 5.0f;
 	[SerializeField]
 	float checkDist = 5.0f;
-
-	//GameObject highlightPrefab;
+	
 	[SerializeField]
 	GameObject highlight;
 	Structure currentStructure;
@@ -46,15 +45,12 @@ public class BuildController : MonoBehaviour {
 	
 	private bool canPlace = false;
 	
-	//Caches for optimization; Transform.SetParent and GameObject.AddComponent are quite expensive
-	Transform lastSnap;
-	//Don't set and retuirn snap every frame
-	//Beginning of frame: test if transform is the same as last frame, and if it isn't, return the snap and set a new one
-	//End of frame: update last snapped transform
-	
 	void Awake () {
+		//Use of LayerMasks to improve performance and code simplification
 		validityCheckMask = 1 << LayerMask.NameToLayer(structureLayer);
 		structureMask = 1 << LayerMask.NameToLayer(structureLayer);
+		
+		//When we change the structure we're placing, we need to change the highlight mesh and materials
 		highlightMesh = highlight.GetComponent<MeshFilter>();
 		highlightRenderer = highlight.GetComponent<Renderer>();
 	}
@@ -66,6 +62,8 @@ public class BuildController : MonoBehaviour {
 		if (Input.GetKeyDown(rotateKey)) {
 			rotations++;
 		}
+		
+		
 		if (Input.GetButtonDown("Fire1")) {
 			Install();
 		} else if (Input.GetKeyDown(removeKey)) {
@@ -145,6 +143,11 @@ public class BuildController : MonoBehaviour {
 			Structure snapTo = col.GetComponent<Structure>();
 			if (snapTo == null && currentStructure.canPlaceOnlyWhenSnapped) {
 				Debug.LogWarning("GameObject was detected on Structure layer but has no Structure component");
+				continue;
+			}
+			
+			Stability stability = snapTo.GetComponent<Stability>();
+			if (stability.fallen) {
 				continue;
 			}
 			

@@ -2,20 +2,19 @@
 using UnityEngine;
 
 public abstract class Structure : MonoBehaviour {
+	
+	public int managerId = 0;
     
     public bool canPlaceOnlyWhenSnapped = false;
-    
-    //stablity and health should be it's own script
-    //snap to that, not structure?
+	
     [SerializeField]
     protected int maxHealth = 100;
-    [SerializeField]
-    protected int health = 100;
+    public int health { get; protected set;} = 100;
 
     [SerializeField]
-    public Vector3[] validityCheckPoints = { Vector3.zero }; //points in local space that must not overlap any colliders, used in validity checking
+    public Vector3[] validityCheckPoints = { Vector3.zero }; //Points in local space that must not overlap any colliders to place, used in validity checking
     protected static float validityCheckRadius = 0.01f;
-    
+	
     private Transform snap;
 	public event Action deathEvent;
 
@@ -33,7 +32,7 @@ public abstract class Structure : MonoBehaviour {
 		validityCheckPoints = null;
     }
     
-    //Call this instead of Destroy() on every structure
+    //Call this instead of Destroy() when you want to remove a structure
     public virtual void Remove () {
 		deathEvent();
         StructureManager.RemoveStructure(this);

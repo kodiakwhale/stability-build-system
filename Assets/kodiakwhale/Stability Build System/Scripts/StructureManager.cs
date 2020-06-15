@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
+using System.IO;
+using System.Linq;
 
 public class StructureManager : MonoBehaviour {
 	
@@ -12,8 +12,13 @@ public class StructureManager : MonoBehaviour {
 
 	[SerializeField] private Transform[] structurePrefabs;
 	[SerializeField] private KeyCode debugKey = KeyCode.P;
+	[SerializeField] private KeyCode saveKey = KeyCode.O;
+	[SerializeField] private KeyCode loadKey = KeyCode.L;
 	private static bool showStability = true;
 	private static Shader debugShader;
+	
+	//Whenever you change how save files are generated, make sure to update the game version!
+	private static string version = "0.1";
 	
 	//singleton pattern
 	private static StructureManager instance;
@@ -23,8 +28,8 @@ public class StructureManager : MonoBehaviour {
 	private static List<Structure> structures;
 	private static List<Stability> destroyed;
 
-	void Awake () {
-		//only want one instance of this script in the world
+	void Awake() {
+		//Only want one instance of this script in the world
 		if (instance != null && instance != this) {
 			Destroy(this.gameObject);
 		} else {
@@ -52,10 +57,14 @@ public class StructureManager : MonoBehaviour {
 		if (Input.GetKeyDown(debugKey)) {
 			//toggle stability on all structure's materials
 			ToggleStability();
+		} else if (Input.GetKeyDown(saveKey)) {
+			SaveStructures("test");
+		} else if (Input.GetKeyDown(loadKey)) {
+			LoadStructures("test");
 		}
 	}
 	
-	void Glue () {
+	void Glue() {
 		for	(int i = 0; i < destroyed.Count; i++) {
 			Stability structure = destroyed[i];
 			if (structure != null) {
@@ -66,14 +75,14 @@ public class StructureManager : MonoBehaviour {
 		}
 	}
 	
-	void ToggleStability () {
+	void ToggleStability() {
 		showStability = !showStability;
 		for	(int i = 0; i < structures.Count; i++) {
 			UpdateStructureDebug(structures[i].GetComponent<Renderer>());
 		}
 	}
 	
-	static void UpdateStructureDebug (Renderer rend) {
+	static void UpdateStructureDebug(Renderer rend) {
 		int matsLength = rend.materials.Length;
 		Material[] mats = rend.sharedMaterials;
 		for	(int i = 0; i < matsLength; i++) {
@@ -84,7 +93,7 @@ public class StructureManager : MonoBehaviour {
 	}
 	
 	#region Snap Managing
-	public static void StoreSnaps (Transform snap) {
+	public static void StoreSnaps(Transform snap) {
 		string snapName = snap.name;
 		if (snapStorage.Find(snapName) != null) {
 			snapName = snapName + "B";
@@ -99,7 +108,7 @@ public class StructureManager : MonoBehaviour {
 		}
 	}
 	
-	private static void StoreSubSnaps (Transform original, Transform newSnap) {
+	private static void StoreSubSnaps(Transform original, Transform newSnap) {
 		foreach (Transform child in original) {
 			Transform subSnap = new GameObject(child.name).transform;
 			subSnap.SetParent(newSnap);
@@ -110,7 +119,7 @@ public class StructureManager : MonoBehaviour {
 		}
 	}
 	
-	public static Transform GetSnap (Structure structure) {
+	public static Transform GetSnap(Structure structure) {
 		string snapName = structure.GetType().Name;
 		Transform snap = snapStorage.Find(snapName);
 		if (snap == null) {
@@ -121,7 +130,7 @@ public class StructureManager : MonoBehaviour {
 	#endregion
 	
 	#region Structure Managing
-	public static void AddStructure (Structure structure) {
+	public static void AddStructure(Structure structure) {
 		if (!structures.Contains(structure)) {
 			structures.Add(structure);
 			UpdateStructureDebug(structure.GetComponent<Renderer>());
@@ -129,18 +138,105 @@ public class StructureManager : MonoBehaviour {
 	}
 	
 	//when a structure is removed, call this
-	public static void RemoveStructure (Structure structure) {
+	public static void RemoveStructure(Structure structure) {
 		if (structures.Contains(structure)) {
 			structures.Remove(structure);
 		}
 		
 	}
 	
-	public static void AddDestroyed (Stability structure) {
+	public static void AddDestroyed(Stability structure) {
 		if (!destroyed.Contains(structure)) {
 			destroyed.Add(structure);
 		}
 	}
 	#endregion
 	
+	#region Saving and Loading
+	
+	void SaveStructures(string saveName) {
+		string savePath = Application.persistentDataPath;
+		savePath = Path.Combine(savePath, saveName);
+		using (
+			BinaryWriter bwriter = new BinaryWriter(File.Open(savePath, FileMode.Create))
+		) {
+			GameWriter writer = new GameWriter(bwriter);
+			writer.Write(version);
+			
+			writer.Write(structures.Count);
+			for (int i = 0; i < structures.Count; i++) {
+				Structure structureComponent = structures[i];
+				Stability stabilityComponent = structureComponent.GetComponent<Stability>();
+				
+				//Write the name of the Structure type, so we can spawn the right one when loading
+				writer.Write(structureComponent.GetType().Name);
+				writer.Write(structureComponent.health);
+				
+				//Write transform information
+				Transform t = structureComponent.transform;
+				writer.Write(t.position);
+				writer.Write(t.rotation);
+				writer.Write(t.localScale);
+				
+				//Write a bool to indicate if a structure has a Stability component
+				bool hasStability = stabilityComponent != null;
+				writer.Write(hasStability);
+				if (hasStability) {
+					writer.Write(stabilityComponent.stability);
+				}
+				
+			}
+		}
+	}
+	
+	void LoadStructures(string saveName) {
+		string savePath = Application.persistentDataPath;
+		savePath = Path.Combine(savePath, saveName);
+		using (
+			BinaryReader breader = new BinaryReader(File.Open(savePath, FileMode.Open))
+		) {
+			GameReader reader = new GameReader(breader);
+			string fileVersion = reader.ReadString();
+			if (fileVersion != version) {
+				Debug.LogError("Incompatible save file version.");
+				return;
+			}
+			
+			int numStructures = reader.ReadInt();
+			for (int i = 0; i < numStructures; i++) {
+				string structureTypeName = reader.ReadString();
+				int structureHealth = reader.ReadInt();
+				
+				int structureIndex = -1;
+				for (int j = 0; j < structurePrefabs.Length; j++) {
+					if (structurePrefabs[j].GetComponent<Structure>().GetType().Name == structureTypeName) {
+						structureIndex = j;
+						break;
+					}
+				}
+				
+				if (structureIndex == -1) {
+					Debug.LogError("Corrupted save file! Could not spawn Structure of type: " + structureTypeName);
+					return;
+				}
+				
+				//Spawns a new object, reading in the position and rotation
+				GameObject structureObj = Instantiate(structurePrefabs[structureIndex].gameObject, reader.ReadVector3(), reader.ReadQuaternion(), null);
+				structureObj.transform.localScale = reader.ReadVector3();
+				
+				//Make sure to add a stability component if there wasn't one on the prefab
+				if (reader.ReadBool()) {
+					Stability structureStability = structureObj.GetComponent<Stability>();
+					if (structureStability == null) {
+						structureStability = structureObj.AddComponent<Stability>();
+					}
+					structureStability.stability = reader.ReadInt();
+				}
+				
+				AddStructure(structureObj.GetComponent<Structure>());
+			}
+		}
+	}
+	
+	#endregion
 }

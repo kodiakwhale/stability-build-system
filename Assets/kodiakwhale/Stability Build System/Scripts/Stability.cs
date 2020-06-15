@@ -7,15 +7,17 @@ using StabilityBuild;
 public class Stability : MonoBehaviour {
 	
 	private Renderer rend;
-	private bool fallen = false;
+	public bool fallen { get; private set; } = false;
 	public bool glued { get; private set; } = false;
 	
 	private bool anchored;
 	private Stability mostStableNeighbor;
 	
+	private Structure structureComponent;
+	
 	[SerializeField]
     private int maxStability = 100;
-    public int stability { get; private set; } = 100;
+    public int stability = 100;
 	
 	[Tooltip("How much stability is lost from the most stable neighboring structure")]
 	[SerializeField]
@@ -25,7 +27,8 @@ public class Stability : MonoBehaviour {
 	
 	void Start () {
 		RefreshNeighborList();
-		GetComponent<Structure>().deathEvent += Fall;
+		structureComponent = GetComponent<Structure>();
+		structureComponent.deathEvent += Fall;
 	}
 	
 	public void Fall() {
@@ -150,6 +153,7 @@ public class Stability : MonoBehaviour {
 			return;
 		}
         glued = true;
+		StructureManager.RemoveStructure(structureComponent);
 		MeshCollider col = GetComponent<MeshCollider>();
 		if (col != null && !col.convex) {
 			col.convex = true;

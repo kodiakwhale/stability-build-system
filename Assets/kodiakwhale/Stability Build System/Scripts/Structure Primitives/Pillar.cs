@@ -22,7 +22,7 @@ public class Pillar : Structure {
 			int snapIndex = Building.ClosestChildIndex(cornersB, cursorPos);
 			transform.position = cornersB.GetChild(snapIndex).position;
 		} else if (snap is Pillar) {
-			transform.position = snap.transform.position + snap.transform.up * snap.GetComponent<Renderer>().bounds.extents.y * 2;
+			transform.position = snap.transform.position + snap.transform.up * snap.GetComponent<Renderer>().bounds.extents.y * 2 - Vector3.up * 0.5f;
 		} else {
 			return ReturnSnap(false, snap);
 		}
