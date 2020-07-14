@@ -43,6 +43,7 @@ public class BuildController : MonoBehaviour {
 	[SerializeField]
 	private Material invalidMaterial;
 	
+	private bool building = false;
 	private bool canPlace = false;
 	
 	void Awake () {
@@ -55,7 +56,19 @@ public class BuildController : MonoBehaviour {
 		highlightRenderer = highlight.GetComponent<Renderer>();
 	}
 	
+	public void Stop() {
+		building = false;
+		highlight.SetActive(false);
+		if (currentStructure != null) {
+			Destroy(currentStructure);
+		}
+	}
+	
 	void Update () {
+		if (!building) {
+			return;
+		}
+		
 		cursorPos = GetCursorPos();
 		Snap();
 		
@@ -90,6 +103,9 @@ public class BuildController : MonoBehaviour {
 			highlightMesh.mesh = null;
 			return;
 		}
+		
+		building = true;
+		highlight.SetActive(true);
 		
 		//Ger rid of the previous structure component, if it exists
 		if (currentStructure != null) {

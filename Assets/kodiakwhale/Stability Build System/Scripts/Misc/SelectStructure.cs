@@ -43,5 +43,9 @@ public class SelectStructure : MonoBehaviour {
 		} else if (Input.mouseScrollDelta.y < 0) {
 			Select(selectedStructure + 1);
 		}
+		
+		if (Input.GetKeyDown(KeyCode.Q)) {
+			buildController.Stop();
+		}
 	}
 }

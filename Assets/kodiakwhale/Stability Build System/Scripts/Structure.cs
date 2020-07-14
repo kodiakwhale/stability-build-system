@@ -15,6 +15,7 @@ public abstract class Structure : MonoBehaviour {
     [SerializeField]
     public Vector3[] validityCheckPoints = { Vector3.zero }; //Points in local space that must not overlap any colliders to place, used in validity checking
     protected static float validityCheckRadius = 0.01f;
+	protected static float terrainCheckRadius = 1.0f;
 	
     private Transform snap;
 	public event Action deathEvent;

@@ -13,7 +13,7 @@ public class PlatformFoundationTriangle : PlatformTriangle {
 	public override bool IsValid (LayerMask validityCheckMask) {
 		//Add to the platform validity check to make sure the foundation is touching terrain in its center
 		if (base.IsValid(validityCheckMask)) {
-			return Physics.CheckSphere(rend.bounds.center, validityCheckRadius, Building.terrainMask, QueryTriggerInteraction.Collide);
+			return Physics.CheckSphere(transform.position - Vector3.up * terrainCheckRadius, terrainCheckRadius + validityCheckRadius, Building.terrainMask, QueryTriggerInteraction.Collide);
 		}
         
         return false;

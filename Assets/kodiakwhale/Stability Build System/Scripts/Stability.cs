@@ -26,6 +26,7 @@ public class Stability : MonoBehaviour {
 	private List<Stability> neighbors = new List<Stability>();
 	
 	void Start () {
+		rend = GetComponent<Renderer>();
 		RefreshNeighborList();
 		structureComponent = GetComponent<Structure>();
 		structureComponent.deathEvent += Fall;
@@ -76,7 +77,6 @@ public class Stability : MonoBehaviour {
 	}
 	
 	public void RefreshNeighborList() {
-		rend = GetComponent<Renderer>();
 		(Vector3 a, Vector3 b, Quaternion c) CheckParams = (rend.bounds.center, rend.bounds.extents * 1.01f, Quaternion.identity); //C# tuples are kind of weird
 		if (Physics.CheckBox(CheckParams.a, CheckParams.b, CheckParams.c, Building.terrainMask)) {
 			anchored = true;
