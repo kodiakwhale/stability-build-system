@@ -20,7 +20,7 @@ public class Wall : Structure {
 			transform.position = sidesB.GetChild(snapIndex).position;
 			transform.rotation = snap.transform.rotation * Quaternion.Euler(0, 120 * snapIndex + 180, 0);
 		} else if (snap is Wall) {
-			transform.position = snap.transform.position + Vector3.up * 4 * Building.BuildScale;
+			transform.position = snap.transform.position + Vector3.up * (snap is Halfwall ? 2 : 4) * Building.BuildScale;
 			transform.rotation = snap.transform.rotation;
 		} else {
 			return ReturnSnap(false, snap);
@@ -29,9 +29,10 @@ public class Wall : Structure {
 		return ReturnSnap(true, snap);
     }
 	
+	//For the wall, we want it to be supported on its sides in order to be placed.
+	//If you don't want to have pillars in order to place walls, simply coment out this IsValid override
 	public override bool IsValid(LayerMask validityCheckMask) {
 		if (base.IsValid(validityCheckMask)) {
-			//create these here instead of assigning in the inspector so we don't have to copy values to the highlight in BuildController
 			Vector3[] supportCheckSpots = { new Vector3(2, 2, 0), new Vector3(-2, 2, 0)};
 			
 			bool hasSupport = true;

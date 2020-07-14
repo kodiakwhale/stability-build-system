@@ -71,9 +71,7 @@ public class Stability : MonoBehaviour {
 		}
 		if (neighbors.Contains(neighbor)) {
 			neighbors.Remove(neighbor);
-			//if (neighbor == mostStableNeighbor) {
-				UpdateStability();
-			//}
+			UpdateStability();
 		}
 	}
 	
@@ -130,11 +128,6 @@ public class Stability : MonoBehaviour {
 				}
 				neighbors[i].UpdateStability();
 			}
-			/*foreach (Stability neighbor in neighbors) {
-				if (neighbor != null) {
-					neighbor.UpdateStability();
-				}
-			}*/
 		}
 		
 		foreach (Material mat in rend.sharedMaterials) {
@@ -148,7 +141,6 @@ public class Stability : MonoBehaviour {
 	}
 	
 	public void Glue (Transform glueTo) {
-        // :)
 		if (glued || !fallen) {
 			return;
 		}
@@ -162,27 +154,27 @@ public class Stability : MonoBehaviour {
 			neighbors[i].Glue(glueTo);
 		}
 		
-		Rigidbody rb = gameObject.AddComponent<Rigidbody>();
 		if (glueTo == transform) {
+			gameObject.AddComponent<Rigidbody>();
 			return;
 		}
-		rb.isKinematic = true;
 		
 		transform.SetParent(glueTo);
+		
+		Rigidbody rb = GetComponent<Rigidbody>();
 		if (rb != null) {
 			Destroy(rb);
 		}
-		//Fall();
     }
 	
-	void OnCollisionEnter (Collision col) {
+	/*void OnCollisionEnter (Collision col) {
 		int layer = col.collider.gameObject.layer;
-		if (!glued || layer == (layer & Building.structureMask)) {
+		if (!glued || layer != (layer & Building.structureMask)) {
 			return;
 		}
 		
 		GetComponent<Rigidbody>().isKinematic = false;
 		transform.SetParent(null);
-	}
+	}*/
 	
 }

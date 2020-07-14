@@ -3,6 +3,7 @@ using UnityEngine;
 
 public abstract class Structure : MonoBehaviour {
 	
+	[HideInInspector]
 	public int managerId = 0;
     
     public bool canPlaceOnlyWhenSnapped = false;

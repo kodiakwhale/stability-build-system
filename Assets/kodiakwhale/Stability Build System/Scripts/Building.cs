@@ -8,7 +8,9 @@ namespace StabilityBuild {
 		public static LayerMask terrainMask = 1 << LayerMask.NameToLayer("Terrain");
 		public static LayerMask structureMask = 1 << LayerMask.NameToLayer("Structure");
 		
-		//TODO: move to generic function in StabilityBuild namespace
+		/// <summary>
+		/// Returns the child of "snap" that is closest to "pos"
+		/// </summary>
 		public static Transform ClosestChild(Transform snap, Vector3 pos) {
 			float closestDist = float.MaxValue;
 			Transform closestSnap = snap.GetChild(0);
@@ -22,7 +24,9 @@ namespace StabilityBuild {
 			return closestSnap;
 		}
 		
-		//TODO: move to generic function in StabilityBuild namespace
+		/// <summary>
+		/// Returns the index of the child of "snap" that is closest to "pos"
+		/// </summary>
 		public static int ClosestChildIndex(Transform snap, Vector3 pos) {
 			float closestDist = float.MaxValue;
 			int closestIndex = 0;

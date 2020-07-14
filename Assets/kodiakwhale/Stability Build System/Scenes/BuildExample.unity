@@ -248,7 +248,7 @@ Light:
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
-    m_Bias: 0
+    m_Bias: 0.1
     m_NormalBias: 0.4
     m_NearPlane: 0.2
   m_Cookie: {fileID: 0}
@@ -453,7 +453,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 534669902}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1715241184}
@@ -684,6 +684,8 @@ MonoBehaviour:
   - {fileID: 2718372512609305130, guid: 85d232df3f57c2341b0041de4482a581, type: 3}
   - {fileID: 7263971534384453734, guid: e89dc6931841e4d4a9ca7a683f43ec42, type: 3}
   - {fileID: 6311529717359723915, guid: 85d7364c7a425bc4faa08c8f06a27c3d, type: 3}
+  - {fileID: 8143510091489293847, guid: 79f20c471cf97a740ace8392d3c20592, type: 3}
+  - {fileID: 5665340455927679673, guid: 79eb4de3b3fcc9f47b02ba1719ab77cb, type: 3}
   debugKey: 112
   saveKey: 111
   loadKey: 108
@@ -884,7 +886,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5245afbe8b4538d47bd8ee0e84729e7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 8
   gravity: 14
   jumpVelocity: 5
   sensitivity: 2
@@ -900,8 +902,8 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 2
-  m_Radius: 0.5
+  m_Height: 1.5
+  m_Radius: 0.3
   m_SlopeLimit: 50
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -971,4 +973,6 @@ MonoBehaviour:
   - {fileID: 2718372512609345034, guid: 85d232df3f57c2341b0041de4482a581, type: 3}
   - {fileID: 7263971534384874566, guid: e89dc6931841e4d4a9ca7a683f43ec42, type: 3}
   - {fileID: 6311529717359696299, guid: 85d7364c7a425bc4faa08c8f06a27c3d, type: 3}
+  - {fileID: 8143510091488864823, guid: 79f20c471cf97a740ace8392d3c20592, type: 3}
+  - {fileID: 5665340455928174233, guid: 79eb4de3b3fcc9f47b02ba1719ab77cb, type: 3}
   uiParent: {fileID: 1223214825}
