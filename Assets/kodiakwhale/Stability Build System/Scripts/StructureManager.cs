@@ -10,23 +10,19 @@ public class StructureManager : MonoBehaviour {
 	It detects groups of collapsed structures and groups them into one rigidbody.
 	*/
 
-	[SerializeField] private Transform[] structurePrefabs;
-	[SerializeField] private KeyCode debugKey = KeyCode.P;
-	[SerializeField] private KeyCode saveKey = KeyCode.O;
-	[SerializeField] private KeyCode loadKey = KeyCode.L;
-	private static bool showStability = true;
-	private static Shader debugShader;
+	[SerializeField] Transform[] structurePrefabs;
+	[SerializeField] KeyCode debugKey = KeyCode.P;
+	[SerializeField] KeyCode saveKey = KeyCode.O;
+	[SerializeField] KeyCode loadKey = KeyCode.L;
+	static bool showStability = true;
+	static Shader debugShader;
 	
-	//Whenever you change how save files are generated, make sure to update the game version!
-	private static string version = "0.1";
-	
-	//singleton pattern
-	private static StructureManager instance;
+	static StructureManager instance;
 	public static StructureManager Instance { get { return instance; } }
 
-	private static Transform snapStorage;
-	private static List<Structure> structures;
-	private static List<Stability> destroyed;
+	static Transform snapStorage;
+	static List<Structure> structures;
+	static List<Stability> destroyed;
 
 	void Awake() {
 		//Only want one instance of this script in the world
@@ -41,7 +37,7 @@ public class StructureManager : MonoBehaviour {
 		destroyed = new List<Stability>();
 		debugShader = Shader.Find("kodiakwhale/Stability Build Debug");
 		
-		//store two copies of every snap, in case we need to snap two of the same structure together
+		//Store two copies of every snap, in case we need to snap two of the same structure together
 		for	(int i = 0; i < structurePrefabs.Length; i++) {
 			StoreSnaps(structurePrefabs[i]);
 			StoreSnaps(structurePrefabs[i]);
@@ -55,7 +51,7 @@ public class StructureManager : MonoBehaviour {
 		}
 		
 		if (Input.GetKeyDown(debugKey)) {
-			//toggle stability on all structure's materials
+			//Toggle stability debug on all structures
 			ToggleStability();
 		} else if (Input.GetKeyDown(saveKey)) {
 			SaveStructures("test");
@@ -152,6 +148,7 @@ public class StructureManager : MonoBehaviour {
 	}
 	#endregion
 	
+	//Saving and loading based on Jasper Flick's implementation from https://catlikecoding.com/unity/tutorials/object-management/persisting-objects/
 	#region Saving and Loading
 	
 	void SaveStructures(string saveName) {
@@ -161,7 +158,7 @@ public class StructureManager : MonoBehaviour {
 			BinaryWriter bwriter = new BinaryWriter(File.Open(savePath, FileMode.Create))
 		) {
 			GameWriter writer = new GameWriter(bwriter);
-			writer.Write(version);
+			writer.Write(Application.version);
 			
 			writer.Write(structures.Count);
 			for (int i = 0; i < structures.Count; i++) {
@@ -197,7 +194,7 @@ public class StructureManager : MonoBehaviour {
 		) {
 			GameReader reader = new GameReader(breader);
 			string fileVersion = reader.ReadString();
-			if (fileVersion != version) {
+			if (fileVersion != Application.version) {
 				Debug.LogError("Incompatible save file version.");
 				return;
 			}

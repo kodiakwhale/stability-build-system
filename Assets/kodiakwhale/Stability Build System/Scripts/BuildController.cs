@@ -2,15 +2,10 @@
 using System.Linq;
 
 public class BuildController : MonoBehaviour {
-
-	//get list of all structures within radious of 3d cursor
-	//order by distance to cursor using ClosestPoint
-	//test. closest to furthest, if can snap
-	//test in Snap every structure to current building
 	
-	private string structureLayer = "Structure";
-	private LayerMask structureMask;
-	private LayerMask validityCheckMask;
+	string structureLayer = "Structure";
+	LayerMask structureMask;
+	LayerMask validityCheckMask;
 	
 	public GameObject platform;
 	
@@ -29,22 +24,21 @@ public class BuildController : MonoBehaviour {
 	Renderer highlightRenderer;
 	Structure highlightStructure;
 	
-	[SerializeField]
-	private KeyCode removeKey = KeyCode.X;
-	[SerializeField]
-	private KeyCode rotateKey = KeyCode.R;
+	[SerializeField] KeyCode stopKey = KeyCode.F;
+	[SerializeField] KeyCode removeKey = KeyCode.X;
+	[SerializeField] KeyCode rotateKey = KeyCode.R;
 	int rotations;
 	
 	[SerializeField]
 	Camera cam;
 	
 	[SerializeField]
-	private Material validMaterial;
+	Material validMaterial;
 	[SerializeField]
-	private Material invalidMaterial;
+	Material invalidMaterial;
 	
-	private bool building = false;
-	private bool canPlace = false;
+	bool building = false;
+	bool canPlace = false;
 	
 	void Awake () {
 		//Use of LayerMasks to improve performance and code simplification
@@ -69,6 +63,10 @@ public class BuildController : MonoBehaviour {
 			return;
 		}
 		
+		if (Input.GetKeyDown(stopKey)) {
+			Stop();
+		}
+		
 		cursorPos = GetCursorPos();
 		Snap();
 		
@@ -76,8 +74,7 @@ public class BuildController : MonoBehaviour {
 			rotations++;
 		}
 		
-		
-		if (Input.GetButtonDown("Fire1")) {
+		if (Input.GetKeyDown(KeyCode.Mouse0)) {
 			Install();
 		} else if (Input.GetKeyDown(removeKey)) {
 			Structure structure = GetCursorStructure();

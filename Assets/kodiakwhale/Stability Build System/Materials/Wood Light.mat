@@ -75,11 +75,11 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _Stability: -11
+    - _Stability: 23
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.29803923, g: 0.17254902, b: 0.101960786, a: 1}
+    - _Color: {r: 0.42745098, g: 0.25490198, b: 0.16862746, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _MaxColor: {r: 0, g: 1, b: 0, a: 1}
     - _MinColor: {r: 1, g: 0, b: 0, a: 1}

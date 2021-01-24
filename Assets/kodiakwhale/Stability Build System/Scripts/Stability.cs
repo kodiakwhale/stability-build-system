@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using StabilityBuild;
 
@@ -16,8 +15,8 @@ public class Stability : MonoBehaviour {
 	private Structure structureComponent;
 	
 	[SerializeField]
-    private int maxStability = 100;
-    public int stability = 100;
+	private int maxStability = 100;
+	public int stability = 100;
 	
 	[Tooltip("How much stability is lost from the most stable neighboring structure")]
 	[SerializeField]
@@ -25,7 +24,7 @@ public class Stability : MonoBehaviour {
 	
 	private List<Stability> neighbors = new List<Stability>();
 	
-	void Start () {
+	void Awake() {
 		rend = GetComponent<Renderer>();
 		RefreshNeighborList();
 		structureComponent = GetComponent<Structure>();
@@ -76,11 +75,18 @@ public class Stability : MonoBehaviour {
 		}
 	}
 	
+	/// <summary>
+	/// Refreshes this structure's list of neighbors
+	/// </summary>
 	public void RefreshNeighborList() {
-		(Vector3 a, Vector3 b, Quaternion c) CheckParams = (rend.bounds.center, rend.bounds.extents * 1.01f, Quaternion.identity); //C# tuples are kind of weird
+		(Vector3 a, Vector3 b, Quaternion c) CheckParams = (rend.bounds.center, rend.bounds.extents * 1.01f, Quaternion.identity); //I just wanted an excuse to try C# tuples :D
 		if (Physics.CheckBox(CheckParams.a, CheckParams.b, CheckParams.c, Building.terrainMask)) {
 			anchored = true;
 			stability = maxStability;
+			//This is only for the debug material; delete this loop if you replace the material
+			foreach (Material mat in rend.sharedMaterials) {
+				mat.SetInt("_Stability", stability);
+			}
 		}
 		Collider[] cols = Physics.OverlapBox(CheckParams.a, CheckParams.b, CheckParams.c, Building.structureMask);
 		neighbors = new List<Stability>();
@@ -105,6 +111,9 @@ public class Stability : MonoBehaviour {
 		UpdateStability();
 	}
 	
+	/// <summary>
+	/// Refreshes the stability of this structure and propagates updates to its neighbors
+	/// </summary>
 	public void UpdateStability() {
 		if (anchored || this == null) {
 			return;
@@ -130,6 +139,7 @@ public class Stability : MonoBehaviour {
 			}
 		}
 		
+		//This is only for the debug material; delete this loop if you replace the material
 		foreach (Material mat in rend.sharedMaterials) {
 			mat.SetInt("_Stability", stability);
 		}
@@ -144,7 +154,7 @@ public class Stability : MonoBehaviour {
 		if (glued || !fallen) {
 			return;
 		}
-        glued = true;
+		glued = true;
 		StructureManager.RemoveStructure(structureComponent);
 		MeshCollider col = GetComponent<MeshCollider>();
 		if (col != null && !col.convex) {
@@ -165,16 +175,6 @@ public class Stability : MonoBehaviour {
 		if (rb != null) {
 			Destroy(rb);
 		}
-    }
-	
-	/*void OnCollisionEnter (Collision col) {
-		int layer = col.collider.gameObject.layer;
-		if (!glued || layer != (layer & Building.structureMask)) {
-			return;
-		}
-		
-		GetComponent<Rigidbody>().isKinematic = false;
-		transform.SetParent(null);
-	}*/
+	}
 	
 }

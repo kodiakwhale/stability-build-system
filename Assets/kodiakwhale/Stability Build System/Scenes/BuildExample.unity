@@ -931,6 +931,7 @@ MonoBehaviour:
   checkRadius: 5
   checkDist: 5
   highlight: {fileID: 992459014}
+  stopKey: 102
   removeKey: 120
   rotateKey: 114
   cam: {fileID: 534669904}
